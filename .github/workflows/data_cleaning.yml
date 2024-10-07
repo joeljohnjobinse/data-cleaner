@@ -1,0 +1,35 @@
+name: Data Cleaning Workflow
+
+on:
+  push:
+    paths:
+      - data/*.csv
+
+jobs:
+  clean-data:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Install dependencies
+      run: |
+        pip install pandas
+
+    - name: Run data cleaning script
+      run: |
+        python data_cleaning.py data/input.csv data/cleaned_output.csv
+
+    - name: Commit cleaned data
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'actions@github.com'
+        git add data/cleaned_output.csv
+        git commit -m 'Add cleaned data'
+        git push
