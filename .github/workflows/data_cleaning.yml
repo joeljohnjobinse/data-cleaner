@@ -1,9 +1,9 @@
-name: Data Cleaning Workflow
+name: Data Cleaning Automation
 
 on:
   push:
     paths:
-      - data/*.csv
+      - 'uploads/*'
 
 jobs:
   clean-data:
@@ -16,20 +16,21 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.x
+        python-version: '3.x'
 
     - name: Install dependencies
       run: |
+        python -m pip install --upgrade pip
         pip install pandas
 
     - name: Run data cleaning script
       run: |
-        python data_cleaning.py data/input.csv data/cleaned_output.csv
+        python data_cleaning.py uploads/input.csv outputs/cleaned_output.csv
 
     - name: Commit cleaned data
       run: |
-        git config --global user.name 'GitHub Actions'
-        git config --global user.email 'actions@github.com'
-        git add data/cleaned_output.csv
-        git commit -m 'Add cleaned data'
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add outputs/cleaned_output.csv
+        git commit -m 'Add cleaned dataset'
         git push
